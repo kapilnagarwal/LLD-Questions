@@ -1,6 +1,6 @@
 import java.util.PriorityQueue;
 
-public class ElevatorCar implements ButtonPanel{
+public class ElevatorCar implements ButtonPanel {
 
     private int currentFloor;
     private Direction direction;
@@ -23,7 +23,7 @@ public class ElevatorCar implements ButtonPanel{
         return direction;
     }
 
-    public String getElevatorName(){
+    public String getElevatorName() {
         return elevatorName;
     }
 
@@ -31,22 +31,21 @@ public class ElevatorCar implements ButtonPanel{
         this.elevatorName = elevatorName;
     }
 
-    public void addRequest(int requestFloor, Direction direction){
-        if (direction == Direction.UP){
+    public void addRequest(int requestFloor, Direction direction) {
+        if (direction == Direction.UP) {
             upRequests.add(requestFloor);
-        }
-        else if (direction == Direction.DOWN){
+        } else if (direction == Direction.DOWN) {
             downRequests.add(requestFloor);
         }
 
-        if (this.direction == Direction.IDLE){
+        if (this.direction == Direction.IDLE) {
             this.direction = direction;
         }
     }
 
     @Override
-    public void pressButton(int destinationFloor){
-        if (currentFloor < destinationFloor){
+    public void pressButton(int destinationFloor) {
+        if (currentFloor < destinationFloor) {
             addRequest(destinationFloor, Direction.UP);
         } else if (currentFloor > destinationFloor) {
             addRequest(destinationFloor, Direction.DOWN);
@@ -54,31 +53,40 @@ public class ElevatorCar implements ButtonPanel{
     }
 
     @Override
-    public void pressButton(int destinationFloor, Direction direction){
+    public void pressButton(int destinationFloor, Direction direction) {
         addRequest(destinationFloor, direction);
     }
 
-    public void move(){
-        if (direction == Direction.UP){
+    public void move() {
+        if (direction == Direction.UP) {
             moveUp();
-        } else if (direction == Direction.DOWN){
+        } else if (direction == Direction.DOWN) {
             moveDown();
+        }
+
+        // Change direction if idle and there are pending requests
+        if (direction == Direction.IDLE) {
+            if (!upRequests.isEmpty()) {
+                direction = Direction.UP;
+            } else if (!downRequests.isEmpty()) {
+                direction = Direction.DOWN;
+            }
         }
     }
 
     private void moveUp() {
-       if (!upRequests.isEmpty()){
-          currentFloor = upRequests.poll();
-          if (upRequests.isEmpty()){
-              direction = downRequests.isEmpty() ? Direction.IDLE : Direction.DOWN;
-          }
+        if (!upRequests.isEmpty()) {
+            currentFloor = upRequests.poll();
+            if (upRequests.isEmpty()) {
+                direction = downRequests.isEmpty() ? Direction.IDLE : Direction.DOWN;
+            }
         }
     }
 
     private void moveDown() {
-        if (!downRequests.isEmpty()){
+        if (!downRequests.isEmpty()) {
             currentFloor = downRequests.poll();
-            if (downRequests.isEmpty()){
+            if (downRequests.isEmpty()) {
                 direction = upRequests.isEmpty() ? Direction.IDLE : Direction.UP;
             }
         }
